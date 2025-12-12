@@ -177,60 +177,9 @@ const parseMarkdownPost = (id: string, rawContent: string): BlogPost => {
 };
 
 // --- DATA: Posts ---
-const POST_1 = `---
-title: Don't Shave That Yak
-date: 2023-11-15
-author: Harun Aksaya
-tags: productivity, focus, work
----
-
-Yak shaving is what you are doing when you're doing some other, less effective task in order to make the original task possible.
-
-It goes like this: "I want to wax the car today."
-
-"Oops, the hose is broken. I'll go buy a new one at Home Depot."
-
-"But the car won't start. I need a new battery."
-
-"The battery shop is next to the barber."
-
-"I'll get a haircut while I'm there."
-
-And so, hours later, you are getting a haircut instead of waxing the car.
-
-Don't shave the yak. Do the work.`;
-
-const POST_2 = `---
-title: Quality vs. Good Enough
-date: 2023-10-27
-author: Harun Aksaya
-tags: quality, shipping, art
----
-
-Quality isn't meeting spec. That's "good enough".
-
-Quality is the generous act of solving a problem for someone else. It's about delight, connection, and the specific utility of the thing you've built.
-
-If you are aiming for perfect, you will miss. If you aim for connection, you might just hit quality.`;
-
-const POST_3 = `---
-title: The Dip
-date: 2023-11-01
-author: Harun Aksaya
-tags: career, quitting, perseverance
----
-
-Every new project (or career, or relationship) starts out exciting and fun. Then it gets harder and less fun, until it hits a low point—really hard, and not much fun at all.
-
-And then you find yourself wondering if it’s worth it.
-
-That's the Dip.
-
-The people who make it through the Dip are the ones who become the best in the world. The people who quit in the Dip are the ones who waste their time and energy.`;
-
-const POST_4 = `---
+const POST_AI = `---
 title: General Artificial Intelligence Won't Take Our Jobs
-date: 2024-05-23
+date: ${new Date().toISOString().split('T')[0]}
 author: Harun Aksaya
 tags: ai, jobs, gai
 ---
@@ -246,10 +195,7 @@ In the work we do and the real-life problems we solve, we don't just use our int
 One of the areas where generative artificial intelligence is perhaps best at is writing code. Despite this, artificial intelligence won't take away my job as a software developer. Because to do my job as a software developer, I need not only my intelligence but also my consciousness and intuition. This being the case, artificial intelligence can be a powerful tool, a lever, that I use to do the tasks I consider drudgery and to automate them.`;
 
 const rawPosts = [
-    { id: '1', content: POST_4 },
-    { id: '2', content: POST_1 },
-    { id: '3', content: POST_2 },
-    { id: '4', content: POST_3 },
+    { id: '1', content: POST_AI },
 ];
 
 const INITIAL_POSTS = rawPosts.map(p => parseMarkdownPost(p.id, p.content));
