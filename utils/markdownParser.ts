@@ -2,11 +2,12 @@ import { BlogPost } from '../types';
 
 export const parseMarkdownPost = (id: string, rawContent: string): BlogPost => {
   // Regex to match YAML frontmatter bounded by ---
-  const frontmatterRegex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
+  // Updated to be more permissive with leading whitespace
+  const frontmatterRegex = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;
   const match = frontmatterRegex.exec(rawContent);
 
   if (!match) {
-    // Fallback if no frontmatter is found
+    // Fallback if no frontmatter is found, return content as is with untitled header
     return {
       id,
       title: 'Untitled',

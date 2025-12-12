@@ -3,29 +3,77 @@ import { Sidebar } from './components/Sidebar.tsx';
 import { PostList } from './components/PostList.tsx';
 import { PostDetail } from './components/PostDetail.tsx';
 import { BlogPost, GeneratorConfig } from './types.ts';
-import { INITIAL_POSTS } from './constants.ts';
 import { generateSethStylePost } from './services/geminiService.ts';
 import { initGA, logPageView, logEvent } from './services/analytics.ts';
-import { Sparkles, X, Loader2, PlusCircle, FilterX, Search } from 'lucide-react';
+import { parseMarkdownPost } from './utils/markdownParser.ts';
+import { Sparkles, X, Loader2, PlusCircle, FilterX, Search, AlertCircle } from 'lucide-react';
 
 export default function App() {
-  const [posts, setPosts] = useState<BlogPost[]>(INITIAL_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>(''); // Search State
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [showGenerator, setShowGenerator] = useState(false);
   const [generatorConfig, setGeneratorConfig] = useState<GeneratorConfig>({
     topic: '',
     isGenerating: false,
   });
 
-  // Initialize Analytics on Mount
+  // --- 1. Load Posts Dynamically via Manifest ---
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        setLoadingPosts(true);
+        // Doğrudan posts/manifest.json yolunu kullanıyoruz. 
+        // Cache parametresini kaldırdık, bazı sunucularda soruna yol açabiliyor.
+        const response = await fetch('posts/manifest.json');
+        
+        if (!response.ok) {
+          throw new Error(`Manifest dosyası yüklenemedi: ${response.statusText}`);
+        }
+        
+        const files: string[] = await response.json();
+        
+        const loadedPosts = await Promise.all(files.map(async (filename) => {
+          try {
+            const res = await fetch(`posts/${filename}`);
+            if (!res.ok) {
+                console.warn(`Post yüklenemedi: ${filename}`);
+                return null;
+            }
+            const text = await res.text();
+            return parseMarkdownPost(filename, text);
+          } catch (e) {
+            console.error(`Error loading post ${filename}`, e);
+            return null;
+          }
+        }));
+
+        // Filter valid posts and sort by date descending
+        const validPosts = loadedPosts
+            .filter((p): p is BlogPost => p !== null)
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        setPosts(validPosts);
+      } catch (err: any) {
+        console.error("Error loading posts:", err);
+        setError(err.message || "Yazılar yüklenirken bir hata oluştu.");
+      } finally {
+        setLoadingPosts(false);
+      }
+    }
+    loadPosts();
+  }, []);
+
+  // --- 2. Analytics ---
   useEffect(() => {
     initGA();
     logPageView('Home', '/');
   }, []);
 
-  // Track Page Views when navigation changes
   useEffect(() => {
     if (selectedPost) {
       logPageView(selectedPost.title, `/post/${selectedPost.id}`);
@@ -34,7 +82,7 @@ export default function App() {
     }
   }, [selectedPost, selectedTag]);
 
-  // Extract unique tags from all posts
+  // --- 3. Filtering Logic ---
   const allTags = useMemo(() => {
     const tags = new Set<string>();
     posts.forEach(post => {
@@ -45,16 +93,13 @@ export default function App() {
     return Array.from(tags).sort();
   }, [posts]);
 
-  // Filter posts based on selected tag AND search query
   const filteredPosts = useMemo(() => {
     let result = posts;
 
-    // 1. Filter by Tag
     if (selectedTag) {
       result = result.filter(post => post.tags && post.tags.includes(selectedTag));
     }
 
-    // 2. Filter by Search Query (Title or Content)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(post => 
@@ -66,21 +111,22 @@ export default function App() {
     return result;
   }, [posts, selectedTag, searchQuery]);
 
+  // --- 4. Handlers ---
   const handleTagSelect = (tag: string) => {
     if (selectedTag === tag) {
-        setSelectedTag(null); // Toggle off if clicking the same tag
+        setSelectedTag(null);
     } else {
         setSelectedTag(tag);
         logEvent('filter_tag', 'Navigation', tag);
     }
-    setSelectedPost(null); // Switch back to list view to show results
+    setSelectedPost(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     if (selectedPost) {
-        setSelectedPost(null); // Return to list view when searching
+        setSelectedPost(null);
     }
   };
 
@@ -91,14 +137,9 @@ export default function App() {
 
   const handleRandomPost = () => {
     if (posts.length === 0) return;
-    
-    // Pick a random index
     const randomIndex = Math.floor(Math.random() * posts.length);
     const randomPost = posts[randomIndex];
-    
     logEvent('click_random', 'Discovery', randomPost.title);
-
-    // Clear filters and set the post
     setSelectedTag(null);
     setSearchQuery('');
     setSelectedPost(randomPost);
@@ -126,7 +167,7 @@ export default function App() {
       setPosts(prev => [newPost, ...prev]);
       setShowGenerator(false);
       setGeneratorConfig({ topic: '', isGenerating: false });
-      setSelectedPost(newPost); // Auto open new post
+      setSelectedPost(newPost);
       setSelectedTag(null);
       setSearchQuery('');
     } catch (error) {
@@ -135,10 +176,34 @@ export default function App() {
     }
   };
 
+  if (loadingPosts) {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-white text-gray-500 font-open-sans">
+            <Loader2 className="animate-spin mr-2" /> Yazılar yükleniyor...
+        </div>
+    );
+  }
+
+  if (error) {
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-500 font-open-sans p-4 text-center">
+            <AlertCircle className="text-red-500 mb-4" size={48} />
+            <h2 className="text-xl font-bold text-gray-700 mb-2">Bir hata oluştu</h2>
+            <p className="text-sm mb-6">{error}</p>
+            <p className="text-xs text-gray-400">Lütfen posts/manifest.json dosyasının doğru olduğundan emin olun.</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-bold"
+            >
+              Yeniden Dene
+            </button>
+        </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-[#555555] font-open-sans selection:bg-seth-yellow selection:text-white flex flex-col md:flex-row">
       
-      {/* Left Column: Sidebar (Sticky on Desktop) */}
       <aside className="w-full md:w-72 lg:w-80 flex-shrink-0 bg-gray-50 border-r border-gray-100 md:h-screen md:sticky md:top-0 overflow-y-auto">
         <Sidebar 
             tags={allTags} 
@@ -150,9 +215,7 @@ export default function App() {
         />
       </aside>
 
-      {/* Right Column: Content */}
       <div className="flex-1 flex flex-col min-w-0 relative">
-        {/* Floating Generator Button (since Header was removed) */}
          <div className="absolute top-6 right-6 z-10">
             <button 
                 onClick={() => setShowGenerator(true)}
@@ -203,9 +266,9 @@ export default function App() {
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4 text-gray-400">
                           <Search size={32} />
                         </div>
-                        <p className="text-xl font-bold text-gray-300">No posts found.</p>
-                        <p className="text-gray-400 mt-2">Try adjusting your search or filters.</p>
-                        <button onClick={handleClearFilter} className="mt-6 text-seth-yellow hover:underline font-bold">Clear all filters</button>
+                        <p className="text-xl font-bold text-gray-300">Henüz yazı bulunamadı.</p>
+                        <p className="text-gray-400 mt-2">posts/manifest.json dosyasını kontrol edin.</p>
+                        <button onClick={handleClearFilter} className="mt-6 text-seth-yellow hover:underline font-bold">Tüm filtreleri temizle</button>
                     </div>
                 )}
             </>
@@ -213,7 +276,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* Generator Modal */}
       {showGenerator && (
         <div className="fixed inset-0 bg-white/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-lg border-2 border-gray-100 shadow-2xl p-8 relative animate-in fade-in zoom-in duration-200">
