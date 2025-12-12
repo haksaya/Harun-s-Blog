@@ -71,6 +71,19 @@ export default function App() {
     return result;
   }, [posts, selectedTag, searchQuery]);
 
+  // Wrapper to handle post selection and scrolling
+  const handleSelectPost = (post) => {
+    console.log("Selected Post:", post.title);
+    setSelectedPost(post);
+    // Force scroll to top instantly to ensure visibility
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToHome = () => {
+    setSelectedPost(null);
+    window.scrollTo(0, 0);
+  };
+
   const handleTagSelect = (tag) => {
     if (selectedTag === tag) {
         setSelectedTag(null);
@@ -79,7 +92,7 @@ export default function App() {
         logEvent('filter_tag', 'Navigation', tag);
     }
     setSelectedPost(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   const handleSearchChange = (query) => {
@@ -102,7 +115,7 @@ export default function App() {
     setSelectedTag(null);
     setSearchQuery('');
     setSelectedPost(randomPost);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   const handleCreatePost = async () => {
@@ -129,6 +142,7 @@ export default function App() {
       setSelectedPost(newPost);
       setSelectedTag(null);
       setSearchQuery('');
+      window.scrollTo(0, 0);
     } catch (error) {
       alert("Failed to generate post. Please check your API Key configuration.");
       setGeneratorConfig(prev => ({ ...prev, isGenerating: false }));
@@ -188,7 +202,7 @@ export default function App() {
           ${selectedPost ? html`
             <${PostDetail} 
               post=${selectedPost} 
-              onBack=${() => setSelectedPost(null)} 
+              onBack=${handleBackToHome} 
               onTagClick=${handleTagSelect}
             />
           ` : html`
@@ -217,7 +231,7 @@ export default function App() {
                 ${filteredPosts.length > 0 ? html`
                     <${PostList} 
                     posts=${filteredPosts} 
-                    onSelectPost=${setSelectedPost} 
+                    onSelectPost=${handleSelectPost} 
                     />
                 ` : html`
                     <div className="text-center py-20">
