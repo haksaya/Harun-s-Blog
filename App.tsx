@@ -5,12 +5,16 @@ import { PostDetail } from './components/PostDetail.tsx';
 import { BlogPost, GeneratorConfig } from './types.ts';
 import { generateSethStylePost } from './services/geminiService.ts';
 import { initGA, logPageView, logEvent } from './services/analytics.ts';
-import { parseMarkdownPost } from './utils/markdownParser.ts';
 import { Sparkles, X, Loader2, PlusCircle, FilterX, Search, AlertCircle } from 'lucide-react';
+import { INITIAL_POSTS } from './constants.ts';
 
 export default function App() {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  // Load initial posts directly from constants to avoid runtime errors with import.meta.glob
+  const [posts, setPosts] = useState<BlogPost[]>(() => {
+     return INITIAL_POSTS.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  });
+  
+  const [loadingPosts, setLoadingPosts] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -21,52 +25,6 @@ export default function App() {
     topic: '',
     isGenerating: false,
   });
-
-  // --- 1. Load Posts Dynamically via Manifest ---
-  useEffect(() => {
-    async function loadPosts() {
-      try {
-        setLoadingPosts(true);
-        // Doğrudan posts/manifest.json yolunu kullanıyoruz. 
-        // Cache parametresini kaldırdık, bazı sunucularda soruna yol açabiliyor.
-        const response = await fetch('posts/manifest.json');
-        
-        if (!response.ok) {
-          throw new Error(`Manifest dosyası yüklenemedi: ${response.statusText}`);
-        }
-        
-        const files: string[] = await response.json();
-        
-        const loadedPosts = await Promise.all(files.map(async (filename) => {
-          try {
-            const res = await fetch(`posts/${filename}`);
-            if (!res.ok) {
-                console.warn(`Post yüklenemedi: ${filename}`);
-                return null;
-            }
-            const text = await res.text();
-            return parseMarkdownPost(filename, text);
-          } catch (e) {
-            console.error(`Error loading post ${filename}`, e);
-            return null;
-          }
-        }));
-
-        // Filter valid posts and sort by date descending
-        const validPosts = loadedPosts
-            .filter((p): p is BlogPost => p !== null)
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-
-        setPosts(validPosts);
-      } catch (err: any) {
-        console.error("Error loading posts:", err);
-        setError(err.message || "Yazılar yüklenirken bir hata oluştu.");
-      } finally {
-        setLoadingPosts(false);
-      }
-    }
-    loadPosts();
-  }, []);
 
   // --- 2. Analytics ---
   useEffect(() => {
@@ -190,7 +148,6 @@ export default function App() {
             <AlertCircle className="text-red-500 mb-4" size={48} />
             <h2 className="text-xl font-bold text-gray-700 mb-2">Bir hata oluştu</h2>
             <p className="text-sm mb-6">{error}</p>
-            <p className="text-xs text-gray-400">Lütfen posts/manifest.json dosyasının doğru olduğundan emin olun.</p>
             <button 
               onClick={() => window.location.reload()} 
               className="mt-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-bold"
@@ -267,7 +224,7 @@ export default function App() {
                           <Search size={32} />
                         </div>
                         <p className="text-xl font-bold text-gray-300">Henüz yazı bulunamadı.</p>
-                        <p className="text-gray-400 mt-2">posts/manifest.json dosyasını kontrol edin.</p>
+                        <p className="text-gray-400 mt-2">Yazılar yüklenirken bir sorun oluştu veya liste boş.</p>
                         <button onClick={handleClearFilter} className="mt-6 text-seth-yellow hover:underline font-bold">Tüm filtreleri temizle</button>
                     </div>
                 )}
