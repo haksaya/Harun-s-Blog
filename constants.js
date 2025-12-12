@@ -1,12 +1,7 @@
 import { parseMarkdownPost } from './utils/markdownParser.js';
 
-// Fallback imports for environments where Vite's import.meta.glob is not available.
-// This ensures the app doesn't crash in raw browser environments or specific previews.
+// Import ONLY the kept post for the fallback mechanism
 import aiJobPost from './posts/general-ai-wont-take-jobs.js';
-import yakPost from './posts/dont-shave-that-yak.js';
-import qualityPost from './posts/quality-vs-good-enough.js';
-import dipPost from './posts/the-dip.js';
-import shippingPost from './posts/shipping-creative-work.js';
 
 let rawPosts = [];
 
@@ -16,7 +11,9 @@ let rawPosts = [];
 // We catch this case and fall back to the manual list.
 try {
     if (import.meta && typeof import.meta.glob === 'function') {
-        const modules = import.meta.glob('./posts/*.md', { 
+        // We explicitly specify the single file we want to keep.
+        // This ensures that even if other .md files exist in the folder, they are ignored.
+        const modules = import.meta.glob('./posts/general-ai-wont-take-jobs.md', { 
             eager: true, 
             query: '?raw', 
             import: 'default' 
@@ -34,13 +31,9 @@ try {
 } catch (e) {
     console.log("Environment does not support Vite Glob Import. Using manual fallback.");
     
-    // Fallback: Manual List
+    // Fallback: Manual List containing ONLY the kept post
     rawPosts = [
         { id: 'general-ai-wont-take-jobs', content: aiJobPost },
-        { id: 'dont-shave-that-yak', content: yakPost },
-        { id: 'quality-vs-good-enough', content: qualityPost },
-        { id: 'the-dip', content: dipPost },
-        { id: 'shipping-creative-work', content: shippingPost },
     ];
 }
 
