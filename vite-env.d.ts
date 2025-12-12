@@ -1,20 +1,18 @@
-// Manually define ImportMeta to support Vite's import.meta.glob and remove missing vite/client reference
+interface ImportMetaEnv {
+  readonly VITE_APP_TITLE: string
+  // more env variables...
+}
+
 interface ImportMeta {
-  glob(pattern: string, options?: { as?: string; eager?: boolean; import?: string; query?: any }): Record<string, any>;
-  readonly env: Record<string, string>;
+  readonly env: ImportMetaEnv
 }
 
-declare module '*.svg' {
+declare module '*.md' {
   const content: string;
   export default content;
 }
 
-declare module '*.png' {
-  const content: string;
-  export default content;
-}
-
-declare module '*.jpg' {
+declare module '*.md?raw' {
   const content: string;
   export default content;
 }

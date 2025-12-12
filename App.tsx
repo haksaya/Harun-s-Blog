@@ -9,7 +9,7 @@ import { Sparkles, X, Loader2, PlusCircle, FilterX, Search, AlertCircle } from '
 import { INITIAL_POSTS } from './constants.ts';
 
 export default function App() {
-  // Load initial posts directly from constants to avoid runtime errors with import.meta.glob
+  // Load posts directly from constants.ts which imports MD files safely
   const [posts, setPosts] = useState<BlogPost[]>(() => {
      return INITIAL_POSTS.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
@@ -26,7 +26,7 @@ export default function App() {
     isGenerating: false,
   });
 
-  // --- 2. Analytics ---
+  // --- Analytics ---
   useEffect(() => {
     initGA();
     logPageView('Home', '/');
@@ -40,7 +40,7 @@ export default function App() {
     }
   }, [selectedPost, selectedTag]);
 
-  // --- 3. Filtering Logic ---
+  // --- Filtering Logic ---
   const allTags = useMemo(() => {
     const tags = new Set<string>();
     posts.forEach(post => {
@@ -69,7 +69,7 @@ export default function App() {
     return result;
   }, [posts, selectedTag, searchQuery]);
 
-  // --- 4. Handlers ---
+  // --- Handlers ---
   const handleTagSelect = (tag: string) => {
     if (selectedTag === tag) {
         setSelectedTag(null);
@@ -224,7 +224,6 @@ export default function App() {
                           <Search size={32} />
                         </div>
                         <p className="text-xl font-bold text-gray-300">Henüz yazı bulunamadı.</p>
-                        <p className="text-gray-400 mt-2">Yazılar yüklenirken bir sorun oluştu veya liste boş.</p>
                         <button onClick={handleClearFilter} className="mt-6 text-seth-yellow hover:underline font-bold">Tüm filtreleri temizle</button>
                     </div>
                 )}
