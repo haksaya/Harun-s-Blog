@@ -8,7 +8,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     
+    <!-- Load custom CSS directly via link tag to avoid JS import errors -->
+    <link rel="stylesheet" href="/index.css">
+
     <script>
+      // Polyfill for process.env
       window.process = { env: { API_KEY: '' } };
     </script>
 
