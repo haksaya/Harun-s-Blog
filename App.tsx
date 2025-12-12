@@ -1,20 +1,38 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PostList } from './components/PostList';
 import { PostDetail } from './components/PostDetail';
 import { BlogPost, GeneratorConfig } from './types';
 import { INITIAL_POSTS } from './constants';
 import { generateSethStylePost } from './services/geminiService';
-import { Sparkles, X, Loader2, PlusCircle } from 'lucide-react';
+import { initGA, logPageView, logEvent } from './services/analytics';
+import { Sparkles, X, Loader2, PlusCircle, FilterX, Search } from 'lucide-react';
 
 export default function App() {
   const [posts, setPosts] = useState<BlogPost[]>(INITIAL_POSTS);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>(''); // Search State
   const [showGenerator, setShowGenerator] = useState(false);
   const [generatorConfig, setGeneratorConfig] = useState<GeneratorConfig>({
     topic: '',
     isGenerating: false,
   });
+
+  // Initialize Analytics on Mount
+  useEffect(() => {
+    initGA();
+    logPageView('Home', '/');
+  }, []);
+
+  // Track Page Views when navigation changes
+  useEffect(() => {
+    if (selectedPost) {
+      logPageView(selectedPost.title, `/post/${selectedPost.id}`);
+    } else {
+      logPageView(selectedTag ? `Tag: ${selectedTag}` : 'Home', '/');
+    }
+  }, [selectedPost, selectedTag]);
 
   // Extract unique tags from all posts
   const allTags = useMemo(() => {
@@ -26,6 +44,66 @@ export default function App() {
     });
     return Array.from(tags).sort();
   }, [posts]);
+
+  // Filter posts based on selected tag AND search query
+  const filteredPosts = useMemo(() => {
+    let result = posts;
+
+    // 1. Filter by Tag
+    if (selectedTag) {
+      result = result.filter(post => post.tags && post.tags.includes(selectedTag));
+    }
+
+    // 2. Filter by Search Query (Title or Content)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(post => 
+        post.title.toLowerCase().includes(query) || 
+        post.content.toLowerCase().includes(query)
+      );
+    }
+
+    return result;
+  }, [posts, selectedTag, searchQuery]);
+
+  const handleTagSelect = (tag: string) => {
+    if (selectedTag === tag) {
+        setSelectedTag(null); // Toggle off if clicking the same tag
+    } else {
+        setSelectedTag(tag);
+        logEvent('filter_tag', 'Navigation', tag);
+    }
+    setSelectedPost(null); // Switch back to list view to show results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    if (selectedPost) {
+        setSelectedPost(null); // Return to list view when searching
+    }
+  };
+
+  const handleClearFilter = () => {
+      setSelectedTag(null);
+      setSearchQuery('');
+  };
+
+  const handleRandomPost = () => {
+    if (posts.length === 0) return;
+    
+    // Pick a random index
+    const randomIndex = Math.floor(Math.random() * posts.length);
+    const randomPost = posts[randomIndex];
+    
+    logEvent('click_random', 'Discovery', randomPost.title);
+
+    // Clear filters and set the post
+    setSelectedTag(null);
+    setSearchQuery('');
+    setSelectedPost(randomPost);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleCreatePost = async () => {
     if (!generatorConfig.topic.trim()) return;
@@ -43,10 +121,14 @@ export default function App() {
         tags
       };
 
+      logEvent('generate_post', 'AI', generatorConfig.topic);
+
       setPosts(prev => [newPost, ...prev]);
       setShowGenerator(false);
       setGeneratorConfig({ topic: '', isGenerating: false });
       setSelectedPost(newPost); // Auto open new post
+      setSelectedTag(null);
+      setSearchQuery('');
     } catch (error) {
       alert("Failed to generate post. Please check your API Key.");
       setGeneratorConfig(prev => ({ ...prev, isGenerating: false }));
@@ -58,7 +140,14 @@ export default function App() {
       
       {/* Left Column: Sidebar (Sticky on Desktop) */}
       <aside className="w-full md:w-72 lg:w-80 flex-shrink-0 bg-gray-50 border-r border-gray-100 md:h-screen md:sticky md:top-0 overflow-y-auto">
-        <Sidebar tags={allTags} />
+        <Sidebar 
+            tags={allTags} 
+            selectedTag={selectedTag}
+            onTagClick={handleTagSelect}
+            onRandomPostClick={handleRandomPost}
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+        />
       </aside>
 
       {/* Right Column: Content */}
@@ -79,12 +168,47 @@ export default function App() {
             <PostDetail 
               post={selectedPost} 
               onBack={() => setSelectedPost(null)} 
+              onTagClick={handleTagSelect}
             />
           ) : (
-            <PostList 
-              posts={posts} 
-              onSelectPost={setSelectedPost} 
-            />
+            <>
+                {(selectedTag || searchQuery) && (
+                    <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between bg-gray-50 p-4 rounded-sm border-l-4 border-seth-yellow animate-in fade-in slide-in-from-top-2 gap-3">
+                        <div className="flex flex-col md:flex-row md:items-center gap-2">
+                            <span className="text-gray-500 font-open-sans text-sm">Showing results for:</span>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedTag && <span className="font-bold text-[#3a3a3a] text-lg">#{selectedTag}</span>}
+                              {searchQuery && <span className="font-bold text-[#3a3a3a] text-lg">"{searchQuery}"</span>}
+                            </div>
+                            <span className="md:ml-2 text-xs font-bold text-gray-400 bg-white px-2 py-1 rounded-full shadow-sm w-fit">
+                                {filteredPosts.length} posts
+                            </span>
+                        </div>
+                        <button 
+                            onClick={handleClearFilter}
+                            className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                            <FilterX size={14} className="mr-1" /> Clear Filters
+                        </button>
+                    </div>
+                )}
+                
+                {filteredPosts.length > 0 ? (
+                    <PostList 
+                    posts={filteredPosts} 
+                    onSelectPost={setSelectedPost} 
+                    />
+                ) : (
+                    <div className="text-center py-20">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4 text-gray-400">
+                          <Search size={32} />
+                        </div>
+                        <p className="text-xl font-bold text-gray-300">No posts found.</p>
+                        <p className="text-gray-400 mt-2">Try adjusting your search or filters.</p>
+                        <button onClick={handleClearFilter} className="mt-6 text-seth-yellow hover:underline font-bold">Clear all filters</button>
+                    </div>
+                )}
+            </>
           )}
         </main>
       </div>

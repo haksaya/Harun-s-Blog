@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { Mail, Search, Github, Linkedin, Twitter, Instagram, GraduationCap, Loader2, Check } from 'lucide-react';
+import { Mail, Search, Github, Linkedin, Twitter, Instagram, GraduationCap, Loader2, Check, Shuffle } from 'lucide-react';
 
 interface SidebarProps {
   tags: string[];
+  selectedTag?: string | null;
+  onTagClick?: (tag: string) => void;
+  onRandomPostClick?: () => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ tags }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  tags, 
+  selectedTag, 
+  onTagClick, 
+  onRandomPostClick,
+  searchQuery = '',
+  onSearchChange
+}) => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -15,12 +27,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ tags }) => {
     if (!email) return;
 
     setIsSubmitting(true);
-    // Simulate API call
+    
+    // Serverless "Magic":
+    // 1. We simulate the process for UI feedback.
+    // 2. We trigger a mailto link so the user actually sends the request to you.
+    // Alternatively, replace the form logic with Formspree.io to handle this silently.
+    
     setTimeout(() => {
+      // Trigger Mail Client
+      window.location.href = `mailto:harunaksaya@example.com?subject=Subscribe Request&body=Please subscribe me to Harun's Blog. My email is: ${email}`;
+      
       setIsSubmitting(false);
       setIsSubscribed(true);
       setEmail('');
-    }, 1000);
+    }, 800);
   };
 
   return (
@@ -63,9 +83,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ tags }) => {
       <div className="mb-10">
         <h3 className="font-open-sans font-extrabold text-xs uppercase tracking-widest text-[#3a3a3a] mb-3">Subscribe</h3>
         {isSubscribed ? (
-          <div className="flex items-center space-x-2 text-green-600 animate-in fade-in slide-in-from-left-2 duration-300">
+          <div className="flex items-center space-x-2 text-seth-yellow animate-in fade-in slide-in-from-left-2 duration-300">
             <Check size={16} />
-            <span className="font-open-sans font-bold text-sm">Thanks for subscribing!</span>
+            <span className="font-open-sans font-bold text-sm">Thanks! Check your email app.</span>
           </div>
         ) : (
           <form onSubmit={handleSubscribe} className="flex flex-row w-full shadow-sm">
@@ -97,6 +117,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ tags }) => {
         <div className="relative">
           <input 
             type="text" 
+            value={searchQuery}
+            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
             placeholder="Type to search..." 
             className="font-open-sans font-semibold w-full border-b-2 border-gray-200 py-2 text-sm focus:outline-none focus:border-seth-yellow transition-colors bg-transparent text-[#3a3a3a] placeholder-gray-400"
           />
@@ -104,17 +126,41 @@ export const Sidebar: React.FC<SidebarProps> = ({ tags }) => {
         </div>
       </div>
 
+      {onRandomPostClick && (
+        <div className="mb-10">
+           <h3 className="font-open-sans font-extrabold text-xs uppercase tracking-widest text-[#3a3a3a] mb-3">Discover</h3>
+           <button 
+             onClick={onRandomPostClick}
+             className="flex items-center font-open-sans font-semibold text-sm text-[#3a3a3a] hover:text-seth-yellow transition-colors group"
+           >
+             <Shuffle size={18} className="mr-2 text-gray-400 group-hover:text-seth-yellow transition-colors" />
+             Random Post
+           </button>
+        </div>
+      )}
+
        <div className="mb-10 flex-1">
-        <h3 className="font-open-sans font-extrabold text-xs uppercase tracking-widest text-[#3a3a3a] mb-4">Tags</h3>
+        <div className="flex justify-between items-center mb-4">
+            <h3 className="font-open-sans font-extrabold text-xs uppercase tracking-widest text-[#3a3a3a]">Tags</h3>
+            {selectedTag && (
+                <button 
+                    onClick={() => onTagClick && onTagClick(selectedTag)}
+                    className="text-[10px] text-red-400 hover:text-red-600 font-bold uppercase"
+                >
+                    Clear
+                </button>
+            )}
+        </div>
         <div className="flex flex-wrap gap-y-2 gap-x-3">
           {tags.length > 0 ? (
             tags.map((tag, idx) => (
-              <span 
+              <button 
                 key={idx} 
-                className="font-open-sans font-bold text-sm text-gray-500 hover:text-seth-yellow transition-colors cursor-pointer"
+                onClick={() => onTagClick && onTagClick(tag)}
+                className={`font-open-sans font-bold text-sm transition-colors cursor-pointer hover:text-seth-yellow ${selectedTag === tag ? 'text-seth-yellow underline' : 'text-gray-500'}`}
               >
                 #{tag}
-              </span>
+              </button>
             ))
           ) : (
             <span className="font-open-sans font-medium text-sm text-gray-400 italic">No tags yet.</span>
