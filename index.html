@@ -8,12 +8,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     
-    <!-- Load custom CSS directly via link tag to avoid JS import errors -->
-    <link rel="stylesheet" href="/index.css">
+    <!-- Load custom CSS directly via relative path -->
+    <link rel="stylesheet" href="./index.css">
 
     <script>
       // Polyfill for process.env
       window.process = { env: { API_KEY: '' } };
+      
+      // Global Error Handler to catch startup errors
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error("Global Error:", message, source, lineno, error);
+        const root = document.getElementById('root');
+        if (root) {
+             root.innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif;">' +
+             '<h1>Startup Error</h1>' +
+             '<p>' + message + '</p>' +
+             '<p><small>' + source + ':' + lineno + '</small></p>' +
+             '</div>';
+        }
+      };
     </script>
 
     <!-- Tailwind CDN for runtime styling -->
@@ -49,7 +62,7 @@
       }
     </script>
 
-    <!-- Import Map for React and HTM (No Build Required) -->
+    <!-- Import Map: Cleaned versions (Removed React 19 duplicates) -->
     <script type="importmap">
 {
   "imports": {
@@ -62,8 +75,8 @@
     "date-fns": "https://esm.sh/date-fns@3.3.1",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "vite": "https://esm.sh/vite@^7.2.7",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.2.7",
     "htm/": "https://esm.sh/htm@^3.1.1/"
   }
 }
@@ -71,7 +84,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- Point to the JS entry point which uses HTM -->
-    <script type="module" src="/index.js"></script>
+    <!-- Point to the JS entry point with relative path -->
+    <script type="module" src="./index.js"></script>
   </body>
 </html>
