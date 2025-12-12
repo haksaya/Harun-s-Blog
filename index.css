@@ -1,0 +1,16 @@
+/* 
+   We are using Tailwind CDN in index.html, so @tailwind directives are removed 
+   to prevent errors in environments that don't process CSS.
+*/
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #ffffff;
+  color: #666666;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #ccc; }
+::-webkit-scrollbar-thumb:hover { background: #ffd900; }
