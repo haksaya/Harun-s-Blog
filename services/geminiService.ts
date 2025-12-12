@@ -2,7 +2,12 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 export const generateSethStylePost = async (topic: string): Promise<{ title: string; content: string; tags: string[] }> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.API_KEY;
+    if (!apiKey) {
+      throw new Error("Gemini API Key not found. Please set VITE_GEMINI_API_KEY in your .env file.");
+    }
+    
+    const ai = new GoogleGenAI({ apiKey });
     
     // Using gemini-2.5-flash for fast, snappy text generation
     const response = await ai.models.generateContent({

@@ -10,7 +10,7 @@ interface SidebarProps {
   onSearchChange?: (query: string) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
+export const Sidebar = React.memo<SidebarProps>(({ 
   tags, 
   selectedTag, 
   onTagClick, 
@@ -173,4 +173,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
     </div>
   );
-};
+});

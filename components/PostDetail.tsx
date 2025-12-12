@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BlogPost } from '../types.ts';
+import { BlogPost } from '../types';
 import { format } from 'date-fns';
-import { MarkdownRenderer } from './MarkdownRenderer.tsx';
+import { MarkdownRenderer } from './MarkdownRenderer';
 import { ArrowLeft, Eye, Twitter, Linkedin, Facebook, Link as LinkIcon, Check } from 'lucide-react';
-import { incrementStoredViewCount } from '../services/viewService.ts';
+import { incrementStoredViewCount } from '../services/viewService';
 
 interface PostDetailProps {
   post: BlogPost;
@@ -11,7 +11,7 @@ interface PostDetailProps {
   onTagClick?: (tag: string) => void;
 }
 
-export const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, onTagClick }) => {
+export const PostDetail = React.memo<PostDetailProps>(({ post, onBack, onTagClick }) => {
   const [viewCount, setViewCount] = useState<number>(0);
   const [copied, setCopied] = useState(false);
 
@@ -120,4 +120,4 @@ export const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, onTagClick
       </div>
     </article>
   );
-};
+});

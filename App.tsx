@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PostList } from './components/PostList';
 import { PostDetail } from './components/PostDetail';
@@ -77,7 +77,7 @@ export default function App() {
   }, [posts, selectedTag, searchQuery]);
 
   // --- Handlers ---
-  const handleTagSelect = (tag: string) => {
+  const handleTagSelect = useCallback((tag: string) => {
     if (selectedTag === tag) {
         setSelectedTag(null);
     } else {
@@ -86,21 +86,21 @@ export default function App() {
     }
     setSelectedPost(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [selectedTag]);
 
-  const handleSearchChange = (query: string) => {
+  const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
     if (selectedPost) {
         setSelectedPost(null);
     }
-  };
+  }, [selectedPost]);
 
-  const handleClearFilter = () => {
+  const handleClearFilter = useCallback(() => {
       setSelectedTag(null);
       setSearchQuery('');
-  };
+  }, []);
 
-  const handleRandomPost = () => {
+  const handleRandomPost = useCallback(() => {
     if (posts.length === 0) return;
     const randomIndex = Math.floor(Math.random() * posts.length);
     const randomPost = posts[randomIndex];
@@ -109,7 +109,7 @@ export default function App() {
     setSearchQuery('');
     setSelectedPost(randomPost);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [posts]);
 
   const handleCreatePost = async () => {
     if (!generatorConfig.topic.trim()) return;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlogPost } from '../types.ts';
+import { BlogPost } from '../types';
 import { format } from 'date-fns';
 import { ArrowRight } from 'lucide-react';
 
@@ -8,7 +8,7 @@ interface PostListProps {
   onSelectPost: (post: BlogPost) => void;
 }
 
-export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost }) => {
+export const PostList = React.memo<PostListProps>(({ posts, onSelectPost }) => {
   return (
     <div className="space-y-16">
       {posts.map((post) => (
@@ -36,4 +36,4 @@ export const PostList: React.FC<PostListProps> = ({ posts, onSelectPost }) => {
       ))}
     </div>
   );
-};
+});

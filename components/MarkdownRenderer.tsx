@@ -5,7 +5,7 @@ interface MarkdownRendererProps {
   content: string;
 }
 
-export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+export const MarkdownRenderer = React.memo<MarkdownRendererProps>(({ content }) => {
   return (
     <div className="prose prose-lg prose-headings:font-open-sans prose-headings:font-extrabold prose-headings:tracking-tight prose-headings:text-[#3a3a3a] prose-p:text-[#666666] prose-p:font-open-sans prose-p:font-normal prose-a:text-seth-yellow prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-seth-yellow prose-blockquote:bg-transparent prose-blockquote:pl-4 prose-blockquote:italic prose-img:rounded-sm max-w-none font-open-sans leading-relaxed text-[18px]">
       <ReactMarkdown
@@ -23,4 +23,4 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) =
       </ReactMarkdown>
     </div>
   );
-};
+});

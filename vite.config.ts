@@ -8,6 +8,24 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
+    sourcemap: false, // Disable sourcemaps in production for smaller bundles
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split vendor chunks for better caching
+          'react-vendor': ['react', 'react-dom'],
+          'markdown': ['react-markdown'],
+          'utils': ['date-fns', 'lucide-react']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
   }
 });
