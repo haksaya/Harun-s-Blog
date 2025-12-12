@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Search, Github, Linkedin, Twitter, Instagram, GraduationCap, Loader2, Check, Shuffle } from 'lucide-react';
+import { Mail, Search, Github, Linkedin, Twitter, Instagram, GraduationCap, Loader2, Check, Shuffle, Youtube } from 'lucide-react';
 
 interface SidebarProps {
   tags: string[];
@@ -49,28 +49,38 @@ export const Sidebar = React.memo<SidebarProps>(({
         <img 
           src="https://harunaksaya.github.io/assets/images/photos/haksaya.jpg" 
           alt="Harun Aksaya" 
-          className="w-36 h-36 rounded-full mx-auto mb-6 object-cover border-4 border-seth-yellow shadow-sm"
+          className="w-36 h-36 rounded-full mx-auto mb-4 object-cover border-4 border-seth-yellow shadow-sm"
         />
+        
+        <h2 className="font-open-sans font-extrabold text-xl text-[#3a3a3a] mb-1">
+          Dr. Harun AKSAYA
+        </h2>
+        <p className="font-open-sans text-sm text-gray-500 mb-6">
+          Computer Scientist
+        </p>
         
         {/* Social Icons */}
         <div className="flex justify-center items-center space-x-3 mb-8">
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="GitHub">
-                <Github size={20} />
-            </a>
-            <a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Google Academic">
+            <a href="https://harunaksaya.github.io" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Google Scholar">
                 <GraduationCap size={20} />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="LinkedIn">
-                <Linkedin size={20} />
+            <a href="https://github.com/haksaya" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="GitHub">
+                <Github size={20} />
             </a>
-            <a href="mailto:email@example.com" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Email">
-                <Mail size={20} />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Twitter / X">
+            <a href="https://twitter.com/harunaksaya" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Twitter / X">
                 <Twitter size={20} />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Instagram">
+            <a href="https://instagram.com/harunaksaya" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Instagram">
                 <Instagram size={20} />
+            </a>
+            <a href="https://linkedin.com/in/harunaksaya" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="LinkedIn">
+                <Linkedin size={20} />
+            </a>
+            <a href="https://youtube.com/@harunaksaya" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="YouTube">
+                <Youtube size={20} />
+            </a>
+            <a href="mailto:harunaksaya@gmail.com" className="text-gray-400 hover:text-seth-yellow transition-colors transform hover:scale-110" title="Email">
+                <Mail size={20} />
             </a>
         </div>
 
