@@ -1,6 +1,19 @@
 import { BlogPost } from '../types';
 
 export const parseMarkdownPost = (id: string, rawContent: string): BlogPost => {
+  // Safety guard: if content is undefined/null (import error), return a placeholder instead of crashing
+  if (!rawContent) {
+    console.warn(`Post content missing for ID: ${id}`);
+    return {
+      id,
+      title: 'Content Unavailable',
+      date: new Date().toISOString(),
+      author: 'System',
+      content: 'This post could not be loaded.',
+      tags: []
+    };
+  }
+
   // Regex to match YAML frontmatter bounded by ---
   // Updated to be more permissive with leading whitespace
   const frontmatterRegex = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]+([\s\S]*)$/;

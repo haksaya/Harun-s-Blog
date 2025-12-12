@@ -1,11 +1,12 @@
 
-import { parseMarkdownPost } from './utils/markdownParser.ts';
+import { parseMarkdownPost } from './utils/markdownParser';
 
 // Markdown content is exported as strings from these TS files
-import aiJobPost from './posts/general-ai-wont-take-jobs.ts';
-import yakPost from './posts/dont-shave-that-yak.ts';
-import qualityPost from './posts/quality-vs-good-enough.ts';
-import dipPost from './posts/the-dip.ts';
+// Importing without extension relies on standard Node/Bundler resolution logic
+import aiJobPost from './posts/general-ai-wont-take-jobs';
+import yakPost from './posts/dont-shave-that-yak';
+import qualityPost from './posts/quality-vs-good-enough';
+import dipPost from './posts/the-dip';
 
 const rawPosts = [
     { id: 'general-ai-wont-take-jobs', content: aiJobPost },

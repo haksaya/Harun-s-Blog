@@ -1,17 +1,24 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Sidebar } from './components/Sidebar.tsx';
-import { PostList } from './components/PostList.tsx';
-import { PostDetail } from './components/PostDetail.tsx';
-import { BlogPost, GeneratorConfig } from './types.ts';
-import { generateSethStylePost } from './services/geminiService.ts';
-import { initGA, logPageView, logEvent } from './services/analytics.ts';
+import { Sidebar } from './components/Sidebar';
+import { PostList } from './components/PostList';
+import { PostDetail } from './components/PostDetail';
+import { BlogPost, GeneratorConfig } from './types';
+import { generateSethStylePost } from './services/geminiService';
+import { initGA, logPageView, logEvent } from './services/analytics';
 import { Sparkles, X, Loader2, PlusCircle, FilterX, Search, AlertCircle } from 'lucide-react';
-import { INITIAL_POSTS } from './constants.ts';
+import { INITIAL_POSTS } from './constants';
 
 export default function App() {
-  // Load posts directly from constants.ts which imports MD files safely
+  // Load posts directly from constants.ts safely.
+  // Using a try-catch block inside the initializer ensures the app renders 
+  // even if there is a data issue, avoiding the "White Screen".
   const [posts, setPosts] = useState<BlogPost[]>(() => {
-     return INITIAL_POSTS.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    try {
+      return INITIAL_POSTS.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } catch (e) {
+      console.error("Failed to initialize posts:", e);
+      return [];
+    }
   });
   
   const [loadingPosts, setLoadingPosts] = useState(false);
