@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Sidebar } from './components/Sidebar';
-import { PostList } from './components/PostList';
-import { PostDetail } from './components/PostDetail';
-import { BlogPost, GeneratorConfig } from './types';
-import { INITIAL_POSTS } from './constants';
-import { generateSethStylePost } from './services/geminiService';
-import { initGA, logPageView, logEvent } from './services/analytics';
+import { Sidebar } from './components/Sidebar.tsx';
+import { PostList } from './components/PostList.tsx';
+import { PostDetail } from './components/PostDetail.tsx';
+import { BlogPost, GeneratorConfig } from './types.ts';
+import { INITIAL_POSTS } from './constants.ts';
+import { generateSethStylePost } from './services/geminiService.ts';
+import { initGA, logPageView, logEvent } from './services/analytics.ts';
 import { Sparkles, X, Loader2, PlusCircle, FilterX, Search } from 'lucide-react';
 
 export default function App() {
@@ -130,7 +130,7 @@ export default function App() {
       setSelectedTag(null);
       setSearchQuery('');
     } catch (error) {
-      alert("Failed to generate post. Please check your API Key.");
+      alert("Failed to generate post. Please check your API Key configuration.");
       setGeneratorConfig(prev => ({ ...prev, isGenerating: false }));
     }
   };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlogPost } from '../types';
+import { BlogPost } from '../types.ts';
 import { format } from 'date-fns';
 import { ArrowRight } from 'lucide-react';
 

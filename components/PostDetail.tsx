@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BlogPost } from '../types';
+import { BlogPost } from '../types.ts';
 import { format } from 'date-fns';
-import { MarkdownRenderer } from './MarkdownRenderer';
+import { MarkdownRenderer } from './MarkdownRenderer.tsx';
 import { ArrowLeft, Eye, Twitter, Linkedin, Facebook, Link as LinkIcon, Check } from 'lucide-react';
-import { incrementStoredViewCount } from '../services/viewService';
+import { incrementStoredViewCount } from '../services/viewService.ts';
 
 interface PostDetailProps {
   post: BlogPost;
