@@ -1,7 +1,6 @@
-/* 
-   We are using Tailwind CDN in index.html, so @tailwind directives are removed 
-   to prevent errors in environments that don't process CSS.
-*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   font-family: 'Open Sans', sans-serif;

@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 
 export const generateSethStylePost = async (topic: string): Promise<{ title: string; content: string; tags: string[] }> => {
   try {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.API_KEY;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
     if (!apiKey) {
       throw new Error("Gemini API Key not found. Please set VITE_GEMINI_API_KEY in your .env file.");
     }

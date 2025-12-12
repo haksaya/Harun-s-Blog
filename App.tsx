@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PostList } from './components/PostList';
 import { PostDetail } from './components/PostDetail';
@@ -21,8 +21,8 @@ export default function App() {
     }
   });
   
-  const [loadingPosts, setLoadingPosts] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingPosts] = useState(false);
+  const [error] = useState<string | null>(null);
   
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);

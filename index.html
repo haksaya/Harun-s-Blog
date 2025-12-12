@@ -1,93 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Harun Aksaya'nın teknoloji, yaşam ve şeyleri gerçekleştirme sanatı üzerine düşünceleri" />
     <title>Harun'un Güncesi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    
-    <!-- Load custom CSS directly via relative path -->
-    <link rel="stylesheet" href="./index.css">
-
-    <script>
-      // Polyfill for process.env
-      window.process = { env: { API_KEY: '' } };
-      
-      // Global Error Handler to catch startup errors
-      window.onerror = function(message, source, lineno, colno, error) {
-        console.error("Global Error:", message, source, lineno, error);
-        // Only show alert if critical root rendering fails
-        if (!document.getElementById('root').hasChildNodes()) {
-             const root = document.getElementById('root');
-             if (root) {
-                 root.innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif;">' +
-                 '<h1>Startup Error</h1>' +
-                 '<p>' + message + '</p>' +
-                 '<p><small>' + source + ':' + lineno + '</small></p>' +
-                 '</div>';
-            }
-        }
-      };
-    </script>
-
-    <!-- Tailwind CDN for runtime styling -->
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['"Open Sans"', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-              'open-sans': ['"Open Sans"', 'sans-serif'],
-            },
-            colors: {
-              'seth-yellow': '#ffd900', 
-              'seth-hover': '#e6c200',
-            },
-            typography: {
-              DEFAULT: {
-                css: {
-                  color: '#666666', 
-                  fontFamily: '"Open Sans", sans-serif',
-                  h1: { fontFamily: '"Open Sans", sans-serif', fontWeight: '800', color: '#3a3a3a' },
-                  h2: { fontFamily: '"Open Sans", sans-serif', fontWeight: '800', color: '#3a3a3a' },
-                  h3: { fontFamily: '"Open Sans", sans-serif', fontWeight: '800', color: '#3a3a3a' },
-                  strong: { color: '#3a3a3a', fontWeight: '700' },
-                  a: { color: '#ffd900', textDecoration: 'none' },
-                  'a:hover': { textDecoration: 'underline' },
-                },
-              },
-            },
-          },
-        }
-      }
-    </script>
-
-    <!-- Import Map: Cleaned to use strictly React 18.3.1 for all dependencies -->
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.3.1",
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?deps=react@18.3.1",
-    "htm/react": "https://esm.sh/htm@3.1.1/react?deps=react@18.3.1",
-    "@google/genai": "https://esm.sh/@google/genai@1.33.0",
-    "react-markdown": "https://esm.sh/react-markdown@9.0.1?bundle&deps=react@18.3.1",
-    "lucide-react": "https://esm.sh/lucide-react@0.344.0?deps=react@18.3.1",
-    "date-fns": "https://esm.sh/date-fns@3.3.1",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "vite": "https://esm.sh/vite@^7.2.7",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "htm/": "https://esm.sh/htm@^3.1.1/"
-  }
-}
-</script>
   </head>
   <body>
     <div id="root"></div>
-    <!-- Point to the JS entry point with relative path -->
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

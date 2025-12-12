@@ -1,6 +1,8 @@
+/// <reference types="vite/client" />
+
 interface ImportMetaEnv {
-  readonly VITE_APP_TITLE: string
-  // more env variables...
+  readonly VITE_GEMINI_API_KEY?: string
+  readonly VITE_GA_MEASUREMENT_ID?: string
 }
 
 interface ImportMeta {
