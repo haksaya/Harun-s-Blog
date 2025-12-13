@@ -1,7 +1,7 @@
 ---
 title: General Artificial Intelligence Won't Take Our Jobs
 date: 2025-12-13
-author: Harun Aksaya
+author: Dr. Harun AKSAYA
 tags: ai, jobs, gai
 ---
 
