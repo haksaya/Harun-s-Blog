@@ -4,7 +4,7 @@ import { PostList } from './components/PostList';
 import { PostDetail } from './components/PostDetail';
 import { BlogPost, GeneratorConfig } from './types';
 import { generateSethStylePost } from './services/geminiService';
-import { initGA, logPageView, logEvent } from './services/analytics';
+import { logPageView, logEvent } from './services/analytics';
 import { Sparkles, X, Loader2, PlusCircle, FilterX, Search, AlertCircle } from 'lucide-react';
 import { INITIAL_POSTS } from './constants';
 
@@ -35,7 +35,6 @@ export default function App() {
 
   // --- Analytics ---
   useEffect(() => {
-    initGA();
     logPageView('Home', '/');
   }, []);
 

@@ -1,5 +1,4 @@
 // This service handles Google Analytics 4 integration for static sites.
-// Replace 'G-XXXXXXXXXX' with your actual Measurement ID from Google Analytics.
 export const GA_TRACKING_ID = 'G-W0YED0N94E';
 
 declare global {
@@ -16,22 +15,23 @@ export const initGA = () => {
   // Prevent duplicate injection
   if (document.getElementById('ga-script')) return;
 
+  // Initialize dataLayer first
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(...args: any[]) {
+    window.dataLayer.push(arguments);
+  };
+  
+  window.gtag('js', new Date());
+  window.gtag('config', GA_TRACKING_ID, {
+    send_page_view: true
+  });
+
+  // Then load the script
   const script = document.createElement('script');
   script.id = 'ga-script';
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
   script.async = true;
   document.head.appendChild(script);
-
-  window.dataLayer = window.dataLayer || [];
-  function gtag(...args: any[]) {
-    window.dataLayer.push(args);
-  }
-  window.gtag = gtag;
-  
-  gtag('js', new Date());
-  gtag('config', GA_TRACKING_ID, {
-    send_page_view: false // We will manually trigger page views in the router/app
-  });
 };
 
 // Log a page view
