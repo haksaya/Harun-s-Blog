@@ -33,6 +33,26 @@ export default function App() {
     isGenerating: false,
   });
 
+  // URL'den post ID'sini oku
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/post/')) {
+        const postId = hash.replace('#/post/', '');
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+          setSelectedPost(post);
+        }
+      } else {
+        setSelectedPost(null);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [posts]);
+
   // --- Analytics ---
   useEffect(() => {
     logPageView('Home', '/');
@@ -84,6 +104,7 @@ export default function App() {
         logEvent('filter_tag', 'Navigation', tag);
     }
     setSelectedPost(null);
+    window.location.hash = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [selectedTag]);
 
@@ -91,6 +112,7 @@ export default function App() {
     setSearchQuery(query);
     if (selectedPost) {
         setSelectedPost(null);
+        window.location.hash = '';
     }
   }, [selectedPost]);
 
@@ -106,7 +128,7 @@ export default function App() {
     logEvent('click_random', 'Discovery', randomPost.title);
     setSelectedTag(null);
     setSearchQuery('');
-    setSelectedPost(randomPost);
+    window.location.hash = `#/post/${randomPost.id}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [posts]);
 
@@ -131,7 +153,7 @@ export default function App() {
       setPosts(prev => [newPost, ...prev]);
       setShowGenerator(false);
       setGeneratorConfig({ topic: '', isGenerating: false });
-      setSelectedPost(newPost);
+      window.location.hash = `#/post/${newPost.id}`;
       setSelectedTag(null);
       setSearchQuery('');
     } catch (error) {
@@ -193,7 +215,9 @@ export default function App() {
           {selectedPost ? (
             <PostDetail 
               post={selectedPost} 
-              onBack={() => setSelectedPost(null)} 
+              onBack={() => {
+                window.location.hash = '';
+              }} 
               onTagClick={handleTagSelect}
             />
           ) : (
@@ -222,7 +246,9 @@ export default function App() {
                 {filteredPosts.length > 0 ? (
                     <PostList 
                     posts={filteredPosts} 
-                    onSelectPost={setSelectedPost} 
+                    onSelectPost={(post) => {
+                      window.location.hash = `#/post/${post.id}`;
+                    }} 
                     />
                 ) : (
                     <div className="text-center py-20">
