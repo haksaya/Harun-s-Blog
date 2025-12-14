@@ -17,7 +17,7 @@ export const initGA = () => {
 
   // Initialize dataLayer first
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function(...args: any[]) {
+  window.gtag = function() {
     window.dataLayer.push(arguments);
   };
   
