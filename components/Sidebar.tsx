@@ -49,10 +49,14 @@ export const Sidebar = React.memo<SidebarProps>(({
         <img 
           src="https://harunaksaya.github.io/assets/images/photos/haksaya.jpg" 
           alt="Harun Aksaya" 
-          className="w-36 h-36 rounded-full mx-auto mb-4 object-cover border-4 border-seth-yellow shadow-sm"
+          className="w-36 h-36 rounded-full mx-auto mb-4 object-cover border-4 border-seth-yellow shadow-sm cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => window.location.hash = ''}
         />
         
-        <h2 className="font-open-sans font-extrabold text-xl text-[#3a3a3a] mb-1">
+        <h2 
+          className="font-open-sans font-extrabold text-xl text-[#3a3a3a] mb-1 cursor-pointer hover:text-seth-yellow transition-colors"
+          onClick={() => window.location.hash = ''}
+        >
           Dr. Harun AKSAYA
         </h2>
         <p className="font-open-sans text-sm text-gray-500 mb-6">
