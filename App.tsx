@@ -2,17 +2,16 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PostList } from './components/PostList';
 import { PostDetail } from './components/PostDetail';
-import { BlogPost, GeneratorConfig } from './types';
-import { generateSethStylePost } from './services/geminiService';
+import { BlogPost } from './types';
 import { logPageView, logEvent } from './services/analytics';
-import { X, Loader2, FilterX, Search, AlertCircle } from 'lucide-react';
+import { Loader2, FilterX, Search, AlertCircle } from 'lucide-react';
 import { INITIAL_POSTS } from './constants';
 
 export default function App() {
   // Load posts directly from constants.ts safely.
   // Using a try-catch block inside the initializer ensures the app renders 
   // even if there is a data issue, avoiding the "White Screen".
-  const [posts, setPosts] = useState<BlogPost[]>(() => {
+  const [posts] = useState<BlogPost[]>(() => {
     try {
       return INITIAL_POSTS.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } catch (e) {
