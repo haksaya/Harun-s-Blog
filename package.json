@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && cp -r posts dist/posts && touch dist/.nojekyll && cp CNAME dist/CNAME",
+    "build": "tsc && vite build && xcopy /E /I /Y posts dist\\posts && type nul > dist\\.nojekyll && copy /Y CNAME dist\\CNAME",
     "preview": "vite preview",
     "lint": "tsc --noEmit"
   },
