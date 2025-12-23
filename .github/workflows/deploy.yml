@@ -31,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
+          npm run postbuild
         env:
           VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}

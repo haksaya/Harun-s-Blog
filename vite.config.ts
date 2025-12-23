@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   assetsInclude: ['**/*.md'],
+  publicDir: 'public',
   server: {
     port: 3000
   },
