@@ -5,7 +5,7 @@ import { PostDetail } from './components/PostDetail';
 import { BlogPost } from './types';
 import { logPageView, logEvent } from './services/analytics';
 import { Loader2, FilterX, Search, AlertCircle } from 'lucide-react';
-import { INITIAL_POSTS } from './constants'; 
+import { INITIAL_POSTS } from './constants';  
 
 export default function App() {
   // Load posts directly from constants.ts safely.
