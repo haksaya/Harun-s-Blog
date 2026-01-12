@@ -1,5 +1,5 @@
 ---
-title: Bilgi Diyeti: Beynimizi Korumanın Yolu
+title: Bilgi Diyeti
 date: 2026-01-12
 author: Dr. Harun AKSAYA
 tags: bilgi diyeti, sosyal medya, farkındalık, dijital sağlık
@@ -15,4 +15,4 @@ Gelecek yeni bir trend: sosyal medyada olmamak artık havalı ve kabul gören bi
 
 Son olarak, en kritik adım: bilinçli bilgi tüketicisi olmak. Kaynaklarımızı doğru seçmek, manipülasyona gelmemek ve zihnimizi çürütmemek artık bir zorunluluk. Her tıklama, her like, her izlenme, beynimize bir mesaj gönderiyor; biz de artık neyi aldığımıza dikkat etmek zorundayız.
 
-Unutmayın: Beyninize verdiğiniz bilgi, geleceğinizi belirler. Diyetinizi seçin, zihin çürümesine ve dikkatinizin parçalanmasına izin vermeyin!
+Beyninize verdiğiniz bilgi, geleceğinizi belirler. Diyetinizi seçin, zihninizin çürümesine ve dikkatinizin parçalanmasına izin vermeyin!
