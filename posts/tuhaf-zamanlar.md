@@ -1,5 +1,5 @@
 ---
-title: Bilgi Diyeti
+title: Tuhaf Zamanlar
 date: 2026-01-24
 author: Dr. Harun AKSAYA
 tags: ai, nicelik, takipçi, dil modelleri
