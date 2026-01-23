@@ -14,3 +14,4 @@ This transformation affects not only people, but also the systems that produce k
 The irony is this: even language models, as they increasingly feed on their own generated texts, begin to dilute knowledge and amplify mistakes. We are constructing a reality made of copies of copies—shiny, yet hollow. Being smart is no longer enough; sometimes, it even becomes a burden. Meaning dissolves into noise, and numbers step ahead of thought.
 
 Strange times…
+ 
